@@ -7,27 +7,17 @@ let numSegments = 50;
 //We will store the segments in an array
 let segments = [];
 
-//let's add a variable to switch between drawing the image and the segments
-let drawSegments = false;
+//lets add a variable to switch between drawing the image and the segments
+let drawSegments = true;
 
-//Let's make an object to hold the draw properties of the image
-let imgDrwPrps = {aspect: 0, width: 0, height: 0, xOffset: 0, yOffset: 0};
-
-//And a variable for the canvas aspect ratio
-let canvasAspectRatio = 0;
-
-//let's load the image from disk
+//lets load the image from disk
 function preload() {
-  img = loadImage('/assets/Mona_Lisa_by_Leonardo_da_Vinci_500_x_700.jpg');
+  img = loadImage('assets/Mona_Lisa_by_Leonardo_da_Vinci_500_x_700.jpg');
 }
 
 function setup() {
   //We will make the canvas the same size as the image using its properties
-  createCanvas(windowWidth, windowHeight);
-  //let's calculate the aspect ratio of the image
-  imgDrwPrps.aspect = img.width / img.height;
-  
-  calculateImageDrawProps();
+  createCanvas(img.width, img.height);
   //We can use the width and height of the image to calculate the size of each segment
   let segmentWidth = img.width / numSegments;
   let segmentHeight = img.height / numSegments;
@@ -39,7 +29,7 @@ function setup() {
     //this is looping over the height
     for (let segXPos=0; segXPos<img.width; segXPos+=segmentWidth) {
       //We will use the x and y position to get the colour of the pixel from the image
-      //let's take it from the centre of the segment
+      //lets take it from the centre of the segment
       let segmentColour = img.get(segXPos + segmentWidth / 2, segYPos + segmentHeight / 2);
        let segment = new ImageSegment(segXPos,segYPos,segmentWidth,segmentHeight,segmentColour);
        segments.push(segment);
@@ -50,13 +40,15 @@ function setup() {
 function draw() {
   background(0);
   if (drawSegments) {
-    //let's draw the segments to the canvas
+    //lets draw the segments to the canvas
     for (const segment of segments) {
+      //lets set the scale of each segment based on its distance from the mouse
+      segment.scale = dist(segment.srcImgSegXPos, segment.srcImgSegYPos, mouseX, mouseY)/100;
       segment.draw();
     }
   } else {
-    //let's draw the image to the canvas
-    image(img, imgDrwPrps.xOffset, imgDrwPrps.yOffset, imgDrwPrps.width, imgDrwPrps.height);
+    //lets draw the image to the canvas
+    image(img, 0, 0);
   }
 }
 function keyPressed() {
@@ -67,38 +59,7 @@ function keyPressed() {
   }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  calculateImageDrawProps();
-}
 
-function calculateImageDrawProps() {
-  //Calculate the aspect ratio of the canvas
-  canvasAspectRatio = width / height;
-  //If the image is wider than the canvas
-  if (imgDrwPrps.aspect > canvasAspectRatio) {
-    //then we will draw the image to the width of the canvas
-    imgDrwPrps.width = width;
-    //and calculate the height based on the aspect ratio
-    imgDrwPrps.height = width / imgDrwPrps.aspect;
-    imgDrwPrps.yOffset = (height - imgDrwPrps.height) / 2;
-    imgDrwPrps.xOffset = 0;
-  } else if (imgDrwPrps.aspect < canvasAspectRatio) {
-    //Otherwise, we will draw the image to the height of the canvas
-    imgDrwPrps.height = height;
-    //and calculate the width based on the aspect ratio
-    imgDrwPrps.width = height * imgDrwPrps.aspect;
-    imgDrwPrps.xOffset = (width - imgDrwPrps.width) / 2;
-    imgDrwPrps.yOffset = 0;
-  }
-  else if (imgDrwPrps.aspect == canvasAspectRatio) {
-    //If the aspect ratios are the same then we can draw the image to the canvas size
-    imgDrwPrps.width = width;
-    imgDrwPrps.height = height;
-    imgDrwPrps.xOffset = 0;
-    imgDrwPrps.yOffset = 0;
-  }
-}
 //Here is our class for the image segments, we start with the class keyword
 class ImageSegment {
 
@@ -110,12 +71,13 @@ class ImageSegment {
     this.srcImgSegWidth = srcImgSegWidthInPrm;
     this.srcImgSegHeight = srcImgSegHeightInPrm;
     this.srcImgSegColour = srcImgSegColourInPrm;
-  }
+    this.scale = 1;
+}
 
   draw() {
-    //let's draw the segment to the canvas, for now we will draw it as an empty rectangle so we can see it
+    //lets draw the segment to the canvas, now filled with the colour and with a black border
     stroke(0);
     fill(this.srcImgSegColour);
-    rect(this.srcImgSegXPos, this.srcImgSegYPos, this.srcImgSegWidth, this.srcImgSegHeight);
+    rect(this.srcImgSegXPos, this.srcImgSegYPos, this.srcImgSegWidth * this.scale, this.srcImgSegHeight * this.scale);
   }
 }
