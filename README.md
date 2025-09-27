@@ -17,9 +17,9 @@ Screenshots/Images:
 
 Part 2: Coding Technique Exploration
 
-To achieve this effect, I explored the coding technique of p5.js.
+To achieve this effect, I explored the coding technique like 2D grid modeling，multi-color interpolatio and animated drawing of p5.js.
 
-This approach uses p5.js techniques such as Recursive Subdivision to create dynamic wallpaper-like animations, geometrically fragmented backgrounds, rhythmic visual transformations, and musical integration, enhancing the work's engagement and artistic quality.
+This approach uses p5.js techniques to create dynamic wallpaper-like animations, geometrically fragmented backgrounds, rhythmic visual transformations, and musical integration, enhancing the work's engagement and artistic quality.
 
 Example Screenshot:
 ![alt text](变化1.png)
